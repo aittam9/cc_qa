@@ -1,0 +1,11 @@
+__pycache__
+.env
+rouge_assessment
+data
+manual_evaluation
+automatic_eval_results
+qa_results
+presentation.pptx
+presentation_proietti.pptx
+trials
+scripts/__pycache__

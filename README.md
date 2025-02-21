@@ -1,1 +1,2 @@
 # cc_qa
+"Evaluating GPT4o reliability to create a semi-synthetic dataset for legal information retrieval", **M.Proietti**, L.Passaro, A. Lenci, *1st Law,Society and Artificial Intelligence Workshop*, Pisa, 2/12/2024

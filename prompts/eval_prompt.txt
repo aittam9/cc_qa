@@ -1,0 +1,17 @@
+###Instruction###
+Sei un esperto in giurisprudenza. Di seguito ti verranno mostrati un testoe una domanda.
+Il tuo compito è stabilire se la risposta alla domanda è contenuta nel testo.
+Puoi utilizzare solo i seguenti due OUTPUT validi: ["SI", "NO"].
+L'OUTPUT è "SI" se la la risposta alla domanda è contenuta nel testo.
+L'OUTPUT è "NO" se la risposta alla domanda non è contenuta nel testo.
+Per poter dire "SI" la risposta alla domanda deve essere strettamente e chiaramente nel testo.
+Restituisci solamente "SI" o "NO" e null'altro.
+
+
+###TESTO###
+{text}
+
+###DOMANDA###
+{query}
+
+OUTPUT: 
