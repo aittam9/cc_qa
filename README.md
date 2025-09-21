@@ -23,4 +23,4 @@ Although raw textual data in the legal domain is abundant, making it easy to col
 
 
 #### Reference
-**M.Proietti**, L.Passaro, A. Lenci, 2025,  *Leveraging LLMs to Build a Semi-Synthetic Dataset for Legal Information Retrieval: a Case Study on the Italian Civil Code and GPT4-o*, Clic-it
+**M.Proietti**, L.Passaro, A. Lenci, 2025,  *Leveraging LLMs to Build a Semi-Synthetic Dataset for Legal Information Retrieval: a Case Study on the Italian Civil Code and GPT4-o*, CLiC-it 2025: Eleventh Italian Conference on Computational Linguistics, September 24 — 26, 2025, Cagliari, Italy
