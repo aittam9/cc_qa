@@ -11,8 +11,6 @@ with open("../qa_results/all_dfs.pkl", "rb") as infile:
     dfs = pickle.load(infile)
 
 evaluation_prompt = open("../prompts/eval_prompt.txt", "r").read()
-
-
 if __name__ == "__main__":
     eval_dfs = []
     for n,book in enumerate(dfs, 1):

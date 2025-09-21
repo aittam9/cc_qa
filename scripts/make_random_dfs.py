@@ -8,15 +8,15 @@ from collections import Counter
 from utils import get_completion, num_tokens_from_string, compute_token_price
 import pickle
 import random 
-
 import argparse
 
 
-
-
+#helper to filter dataframes by row values
 def filter_rows_by_values(df, col, values):
     return df[df[col].isin(values)]
 
+
+#helper to aggregate and filter dfs
 def aggregate_and_filter(dfs):
     #from list of dfs to single df
     concat = pd.concat(dfs)
@@ -27,7 +27,7 @@ def aggregate_and_filter(dfs):
 
     return concat
 
-
+#format the df for the manual evaluation
 def format4manualeval(concat):
     #create a new dataframe with the template of the questions to be evaluated by humans
     man_eval_inputs = []
@@ -43,6 +43,13 @@ def format4manualeval(concat):
 
 
 def make_random_split(man_eval_df):
+    """
+    Suffle all the Q&P pairs and split them into 100 rows sized dataframes
+    Args:
+    The dataframe of all q&p pairs formatted for manual evaluation
+    Return:
+    a list of shuffled dataframes
+    """
     shuffled = man_eval_df.sample(frac = 1)
     sampled_dfs = []
     for step in range(0,8000, 100):
@@ -50,13 +57,27 @@ def make_random_split(man_eval_df):
         print(f"Sampled {step}-{step+100}")
     return sampled_dfs
 
+
 def get_ids_random2add(stored_ids, n):
+    """
+    Get new random ids not matching the already sampled ones.
+    Args:
+    stored_ids: the ids of the already sampled dfs
+    n:the number of new samples to add
+    
+    Return:
+    The new ids to select new dfs with
+    """
     sample_from = list(set(range(80)) -set(stored_ids))
     new_ids = random.choices(sample_from, k = n)
     return new_ids
 
 
 def build_split_from_scratch():
+    """
+    Build the random subsets from  scratch. Filter, format and split the all sets into 100 sized samples and save them as a pickled
+    list of dfs.
+    """
      # read input (list of dfs i binary)
     with open("../automatic_eval_results/all_autoeval_dfs.pkl", "rb") as infile:
         dfs = pickle.load(infile)
@@ -69,7 +90,6 @@ def build_split_from_scratch():
     print(f"Total entries in starting dataframe: {len(set(manual_eval.index.tolist()))}") 
     print(f"Number of sampled dataframe: {len(sampled_dfs)}")
     print(f"Length of each dataframe: {len(sampled_dfs[-1])}")
-
 
     #sanity check if ids overlap
     total_ids = []
@@ -85,6 +105,11 @@ def build_split_from_scratch():
     
 
 def add_splits(n):
+    """
+    Add n new splits to the pool of samples to be manually evaluated
+    args: n = the number of samples to select and add
+    return None, write the sample in the right folder and updated the eval log
+    """
     manual_eval_dir = "../manual_evaluation/evaluated_input"
         #check already saampled subsets
     stored_idx = [int(i.split("_")[-1].split(".")[0]) for i in os.listdir(manual_eval_dir)] 
@@ -97,37 +122,42 @@ def add_splits(n):
     with open("../manual_evaluation/all_rand_subsets.pkl", "rb") as infile:
         sampled_dfs = pickle.load(infile)
     
+    #check how many rounds have already been done and create new folder with progressive id
+    rounds  = len(os.listdir("../manual_evaluation/input2eval/"))
+    new_dst_folder = f"../manual_evaluation/input2eval/{rounds+1}_round"
+    if not os.path.exists(new_dst_folder):
+        os.mkdir(new_dst_folder)
+
     #select additional random subsets and add them to the pool
     for id in ids2add:
         print(f"Saving random sampled dataframe {id}")
-        sampled_dfs[id].to_csv(f"../manual_evaluation/input2eval/man_eval_randss_{id}.tsv", sep = "\t")
+        #sampled_dfs[id].to_csv(f"../manual_evaluation/input2eval/man_eval_randss_{id}.tsv", sep = "\t")
+        sampled_dfs[id].to_csv(f"{new_dst_folder}/man_eval_randss_{id}.tsv", sep = "\t")
         
+        #track addition on eval log
         with open("../manual_evaluation/2eval_log.txt", "a") as f:
             f.write(str(id) +": added to inputs2eval\n")
+        
+        #track addition on annotators log
+        with open("../manual_evaluation/annotators_log.txt", "a") as f:
+            f.write(f"\n\tman_eval_randss_{id}")
             
     print(f"Already evaluated df ids: {stored_idx}\nNew ids added to be evaluated {ids2add}")
     
-
-
-
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--build", "-b", action= "store_true", help= "build the random splits from scratch")
     parser.add_argument("--select", "-s",  help= "select n random subset to add to the pool to evaluatemanually. ")
-
     args = parser.parse_args()
 
     if args.build:
-        
         build_split_from_scratch()
-    
     elif args.select:
       #TODO add a function to clean the input2eval directory first
         n = int(args.select)
         add_splits(n)
-
     else:
         print("Invalid argument. please provide a valid argument.\nType --build to generate random subsets from scratch\nType --select <n> to add n subset to manual evaluation")
     

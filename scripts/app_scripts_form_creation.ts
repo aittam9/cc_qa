@@ -9,8 +9,14 @@ function createFormFromSheet() {
   const questions = data.slice(1);
   let sheet_name = ss.getName()
   // Create a new form
-  const form = FormApp.create('Valutazione domande su Codice Civile (${ss.getName()})');
-  form.setDescription('Indicazioni: \nDi seguito ti verranno mostrati degli articoli del codice civile italiano accoppiati con una domanda. Insieme, testo dell\'articolo e domanda, formano un quesito che ammette una risposta binaria, di tipo "SI"o "NO"\n\nIl tuo compito è stabilire se la domanda è adatta al contenuto del testo e se possa trovare risposta in esso.\nLa risposta alla domanda deve essere strettamente contenuta nel testo, ovvero il testo deve contenere informazioni sufficienti per poter formulare una risposta esaustiva e pertinente alla domanda.\n\nEsempio:\nArt. 1 La capacità giuridica si acquisisce al momento della nascita.\nDomanda valida:\nQuando si acquisisce la capacità giuridica?\n\nDomanda NON valida:\nCosa comporta la capacità giuridica?\n\nNOTA BENE:\nIl tuo compito non è rispondere alla domanda sulla base del testo, ma stabilire se la risposta alla domanda possa essere trovata nel passaggio di testo.');
+  const form = FormApp.create('Valutazione domande su Codice Civile');
+  form.setDescription(
+    'Indicazioni: \nDi seguito ti verranno mostrati degli articoli del codice civile italiano e una domanda riferita ad ognuno di essi.' +
+    'Il tuo compito è stabilire se la risposta alla domanda si trova nel testo oppure no.'+
+    '\nInsieme, testo dell\'articolo e domanda, formano un quesito che ammette una risposta binaria, di tipo "SI, la risposta è contenuta nel testo." oppure "NO, la risposta non è contenuta nel testo."'+
+    
+    '\n\nLa risposta alla domanda deve essere strettamente contenuta nel testo, ovvero il testo deve contenere informazioni sufficienti per poter formulare una risposta esaustiva e pertinente alla domanda.' +
+     '\n\nEsempio:\nArt. 1 La capacità giuridica si acquisisce al momento della nascita.\nDomanda valida:\nQuando si acquisisce la capacità giuridica?\n\nDomanda NON valida:\nCosa comporta la capacità giuridica?\n\nNOTA BENE:\nIl tuo compito non è rispondere alla domanda sulla base del testo, ma stabilire se la risposta alla domanda possa essere trovata nel passaggio di testo.');
   
   // Enable collecting email addresses to track responses
   form.setCollectEmail(true);
@@ -23,9 +29,9 @@ function createFormFromSheet() {
   form.addSectionHeaderItem()
     .setTitle('Welcome')
     .setHelpText(
-      'Il presente form è diviso in 10 pagine contenenti 10 quesiti ognuna, per un totale di 100 quesiti.\n' +
-      'Puoi completare il form in più sessioni, registrandoti con una mail.\n' +
-      'I tuoi progressi verranno salvati automaticamente al termine di ogni pagina, una volta premuto il pulsante "Next".\n' +
+      'Il presente form è diviso in 10 pagine contenenti 10 quesiti ognuna, per un totale di 100 quesiti.\n\n' +
+      'Puoi completare il form in più sessioni, registrandoti con una mail.\n\n' +
+      'I tuoi progressi verranno salvati automaticamente al termine di ogni pagina, una volta premuto il pulsante "Next".\n\n' +
       'Puoi tornare al form in un secondo momento e riprendere da dove hai lasciato collegandoti nuovamente al link e inserendo il tuo indirizzo e-mail.'
     );
     
@@ -78,8 +84,8 @@ function createFormFromSheet() {
       const questionItem = form.addMultipleChoiceItem();
       questionItem.setTitle(`${questionText}`)
         .setChoices([
-          questionItem.createChoice('SI'),
-          questionItem.createChoice('NO')
+          questionItem.createChoice('SI, la risposta è contenuta nel testo.'),
+          questionItem.createChoice('NO, la risposta non è contenuta nel testo')
         ])
         .setRequired(false); // Make questions optional to allow partial completion
       
